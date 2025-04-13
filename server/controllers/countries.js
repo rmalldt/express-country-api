@@ -12,7 +12,6 @@ async function index(req, res) {
 async function show(req, res) {
   try {
     let name = req.params.name;
-    console.log('PARAMS: ', name);
     const country = await Country.findByName(name);
     res.status(200).json({ success: true, data: country });
   } catch (err) {

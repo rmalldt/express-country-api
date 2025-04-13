@@ -77,7 +77,7 @@ PRIMARY KEY (country_id)
 
 To retrieve all countries, use the following GET request - GET /countries
 
-`curl -X GET http://localhost:<port>/countries`
+`curl -X GET http://localhost:[port]/countries`
 
 A successful response will return a JSON array of countries objects, similar to the following:
 
@@ -93,21 +93,6 @@ A successful response will return a JSON array of countries objects, similar to 
     },
     {
       "name": "United States"
-    },
-    {
-      "name": "India"
-    },
-    {
-      "name": "China"
-    },
-    {
-      "name": "Russia"
-    },
-    {
-      "name": "South Africa"
-    },
-    {
-      "name": "Australia"
     }
   ]
 }

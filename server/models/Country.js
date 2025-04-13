@@ -34,8 +34,6 @@ class Country {
       [name]
     );
 
-    console.log('TEST: ', response.rows);
-
     if (response.rows.length !== 1) {
       throw new Error('Unable to locate country.');
     }
@@ -45,6 +43,10 @@ class Country {
 
   static async create(data) {
     const { name, capital, population, languages } = data;
+
+    if (!name || !capital || !population || !languages) {
+      throw new Error('Incomplete data type.');
+    }
 
     const existingCountry = await db.query(
       'SELECT name FROM country WHERE LOWER(name) = LOWER($1);',
