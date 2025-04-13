@@ -30,13 +30,57 @@ class Country {
 
   static async findByName(name) {
     const response = await db.query(
-      'SELECT * FROM country WHERE LOWER(name) = LOWER($1)',
+      'SELECT * FROM country WHERE LOWER(name) = LOWER($1);',
       [name]
     );
 
-    if ((await response).rows.length !== 1) {
-      throw new Error('Unable to locate couttry');
+    console.log('TEST: ', response.rows);
+
+    if (response.rows.length !== 1) {
+      throw new Error('Unable to locate country.');
     }
+
+    return new Country(response.rows[0]);
+  }
+
+  static async create(data) {
+    const { name, capital, population, languages } = data;
+
+    const existingCountry = await db.query(
+      'SELECT name FROM country WHERE LOWER(name) = LOWER($1);',
+      [name]
+    );
+
+    if (existingCountry.rows.length === 0) {
+      const response = await db.query(
+        'INSERT INTO country (name, capital, population, languages) VALUES ($1, $2, $3, $4) RETURNING *;',
+        [name, capital, population, languages]
+      );
+
+      return new Country(response.rows[0]);
+    } else {
+      throw new Error('A country with this name already exists.');
+    }
+  }
+
+  async update(data) {
+    const response = await db.query(
+      'UPDATE country SET capital = $1 WHERE LOWER(name) = LOWER($2) RETURNING name, capital;',
+      [data.capital, this.name]
+    );
+
+    if (response.rows.length !== 1) {
+      throw new Error('Unable to update capital.');
+    }
+
+    return new Country(response.rows[0]);
+  }
+
+  async destroy() {
+    const response = await db.query(
+      'DELETE FROM country WHERE name = $1 RETURNING *;',
+      [this.name]
+    );
 
     return new Country(response.rows[0]);
   }
