@@ -1,3 +1,10 @@
+--
+-- Drop tables
+--
+DROP TABLE IF EXISTS country;
+
+--
+-- Name: country; Type: TABLE; Schema: public; Owner: -; Tablespace:
 CREATE TABLE country (
     country_id INT GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(100) NOT NULL,
