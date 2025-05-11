@@ -1,10 +1,13 @@
-name: Deployment
+name: Development
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - main
+      - 'development'
+  workflow_dispatch:
 env:
   NODE_ENV: 'test'
+
 jobs:
   test:
     env:
