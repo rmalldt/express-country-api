@@ -26,8 +26,8 @@ describe('Country controller', () => {
 
       await countryController.index(null, mockRes);
 
-      expect(Country.getAll).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(Country.getAll).toHaveBeenCalledTimes(2);
+      expect(mockStatus).toHaveBeenCalledWith(201);
       expect(mockJson).toHaveBeenCalledWith({ success: true, data: countries });
     });
 
@@ -36,8 +36,8 @@ describe('Country controller', () => {
 
       await countryController.index(null, mockRes);
 
-      expect(Country.getAll).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(Country.getAll).toHaveBeenCalledTimes(2);
+      expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith({
         error: 'Db Error',
       });
@@ -69,7 +69,7 @@ describe('Country controller', () => {
       await countryController.show(mockReq, mockRes);
 
       expect(Country.findByName).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockStatus).toHaveBeenCalledWith(300);
       expect(mockJson).toHaveBeenCalledWith({
         success: true,
         data: new Country(testCountry),

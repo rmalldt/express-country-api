@@ -34,7 +34,7 @@ describe('Country', () => {
       const countries = await Country.getAll();
 
       // Assert
-      expect(countries).toHaveLength(2);
+      expect(countries).toHaveLength(20);
       expect(countries[0]).toHaveProperty('country_id');
       expect(countries[0].name).toBe('Country1');
       expect(db.query).toHaveBeenCalledWith('SELECT name FROM country;');
@@ -45,7 +45,7 @@ describe('Country', () => {
       jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
 
       // Act & Assert
-      await expect(Country.getAll()).rejects.toThrow('No countries available.');
+      await expect(Country.getAll()).rejects.toThrow('Countries available.');
     });
   });
 
@@ -70,7 +70,7 @@ describe('Country', () => {
       // Assert
       expect(result).toBeInstanceOf(Country);
       expect(result.name).toBe(testCountry.name);
-      expect(result.country_id).toBe(1);
+      expect(result.country_id).toBe(10);
       expect(db.query).toHaveBeenCalledWith(
         'SELECT * FROM country WHERE LOWER(name) = LOWER($1);',
         [testCountry.name]
@@ -109,7 +109,7 @@ describe('Country', () => {
 
       // Assert
       expect(result).toBeInstanceOf(Country);
-      expect(result).toHaveProperty('country_id', 1);
+      expect(result).toHaveProperty('country_id', 10);
       expect(result).toHaveProperty('name', 'Country1');
       expect(result).toHaveProperty('capital', 'Capital1');
       expect(db.query).toHaveBeenCalledWith(
@@ -133,7 +133,7 @@ describe('Country', () => {
 
       // Act & Assert
       await expect(Country.create(incompleteData)).rejects.toThrow(
-        'Incomplete data type.'
+        'Incomplete data.'
       );
     });
 
@@ -152,7 +152,7 @@ describe('Country', () => {
 
       // Assert
       await expect(Country.create(testCountry)).rejects.toThrow(
-        'A country with this name already exists.'
+        'A country with this name already.'
       );
     });
   });
@@ -190,7 +190,7 @@ describe('Country', () => {
       // Assert
       expect(result).toBeInstanceOf(Country);
       expect(result.country_id).toBe(1);
-      expect(result.capital).toBe('NewCapital');
+      expect(result.capital).toBe('New');
       expect(db.query).toHaveBeenCalledWith(
         'UPDATE country SET capital = $1 WHERE LOWER(name) = LOWER($2) RETURNING name, capital;',
         [updateData.capital, country.name]
@@ -228,7 +228,7 @@ describe('Country', () => {
 
       // Assert
       expect(result).toBeInstanceOf(Country);
-      expect(result.country_id).toBe(1);
+      expect(result.country_id).toBe(10);
       expect(result.name).toBe('Country1');
       expect(db.query).toHaveBeenCalledWith(
         'DELETE FROM country WHERE name = $1 RETURNING *;',
