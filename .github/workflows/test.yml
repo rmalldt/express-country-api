@@ -10,24 +10,29 @@ env:
 
 jobs:
   test:
+    name: Check coverage threshold
+    runs-on: ubuntu-latest
     env:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
       PORT: ${{ secrets.PORT }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Get Code
+      - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
           path: ~/.npm
           key: npm-cache-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run tests
         run: npm test -- --coverage --coverageReporters=json-summary
+
       - name: Check coverage threshold
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
