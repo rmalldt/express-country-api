@@ -36,4 +36,4 @@ jobs:
     steps:
       - name: Output information
         run: |
-          echo echo "NODE_ENV: ${{  env.NODE_ENV }}""
+          echo echo "NODE_ENV: ${{  env.NODE_ENV }}"
