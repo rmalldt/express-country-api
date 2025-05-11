@@ -10,6 +10,8 @@ env:
 
 jobs:
   test:
+    # IMPORTANT! Job name should exactly match the status check name declared in
+    # in the set 'Require status checks to pass'
     name: Check coverage threshold
     runs-on: ubuntu-latest
     env:
@@ -37,7 +39,7 @@ jobs:
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
           echo "Total coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 60" | bc -l) )); then
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
             echo "❌ Coverage is below 60%. Found: $COVERAGE%"
             exit 1
           else
