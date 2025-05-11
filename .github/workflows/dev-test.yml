@@ -1,17 +1,17 @@
 name: Development
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - 'development'
   workflow_dispatch:
+
 env:
   NODE_ENV: 'test'
 
 jobs:
   test:
-    # IMPORTANT! Job name should exactly match the status check name declared in
-    # in the set 'Require status checks to pass'
     name: Check coverage threshold
     runs-on: ubuntu-latest
     env:
@@ -22,25 +22,21 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v4
         with:
           path: node_modules
           key: npm-cache-${{ hashFiles('**/package-lock.json') }}
-
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-
       - name: Run tests
         run: npm test -- --coverage --coverageReporters=json-summary
-
       - name: Check coverage threshold
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
-          echo "Total coverage: $COVERAGE%"
+          echo "Total coverage: $COVERAGE%" 
           if (( $(echo "$COVERAGE < 60" | bc -l) )); then
             echo "❌ Coverage is below 60%. Found: $COVERAGE%"
             exit 1
