@@ -146,6 +146,10 @@ describe('Country', () => {
         languages: 'lang1',
       };
 
+      jest
+        .spyOn(db, 'query')
+        .mockResolvedValueOnce({ rows: [{ ...testCountry, country_id: 1 }] });
+
       // Assert
       await expect(Country.create(testCountry)).rejects.toThrow(
         'A country with this name already exists.'
