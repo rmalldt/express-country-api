@@ -1,10 +1,12 @@
 name: Development
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - 'development'
   workflow_dispatch:
+
 env:
   NODE_ENV: 'test'
 
