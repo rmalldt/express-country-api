@@ -38,13 +38,3 @@ jobs:
           else
             echo "✅ Coverage check passed."
           fi
-      - name: Output information
-        run: |
-          echo "DB_USER: ${{ env.DB_USER }}"
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Output information
-        run: |
-          echo echo "NODE_ENV: ${{ env.NODE_ENV }}"
