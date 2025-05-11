@@ -7,12 +7,11 @@ env:
   NODE_ENV: 'test'
 jobs:
   test:
-    environment: testing
     env:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-      PORT:
+      PORT: ${{ secrets.PORT }}
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
