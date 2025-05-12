@@ -47,8 +47,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: coverage
     if: needs.coverage.outputs.build-docker == 'true'
-    env:
-      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME}}/country-api-cld
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,18 +65,10 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME}}/country-api-cld:${{ steps.vars.outputs.sha_short }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME}}/country-api-cld:${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.DOCKER_USERNAME }}/country-api-cld:latest
           build-args: |
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{secrets.DB_PASSWORD}}
             CLUSTER_NAME=${{secrets.CLUSTER_NAME}}
-
-        # run: |
-        #   docker build \
-        #     --build-arg DB_USER=${{secrets.DB_USER}} \
-        #     --build-arg DB_PASSWORD=${{secrets.DB_PASSWORD}} \
-        #     --build-arg CLUSTER_NAME=${{secrets.CLUSTER_NAME}} \
-        #     -t $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
-        #   docker tag $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} $IMAGE_NAME:latest
-        #   docker push $IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
-        #   docker push $IMAGE_NAME:latest
