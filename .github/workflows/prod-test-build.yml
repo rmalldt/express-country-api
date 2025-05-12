@@ -61,7 +61,11 @@ jobs:
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Build and push Docker image
         run: |
-          docker build -t $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
+          docker build \ 
+            --build-arg DB_USER=${{secrets.DB_USER}} \ 
+            --build-arg DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+            --build-arg CLUSTER_NAME=${{secrets.CLUSTER_NAME}} \
+            -t $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
           docker tag $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} $IMAGE_NAME:latest
           docker push $IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
           docker push $IMAGE_NAME:latest
