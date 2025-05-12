@@ -48,24 +48,37 @@ jobs:
     needs: coverage
     if: needs.coverage.outputs.build-docker == 'true'
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       IMAGE_NAME: ${{ secrets.DOCKER_USERNAME}}/country-api-cld
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Log into DockerHub
-        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Set Image name
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Build and push Docker image
-        run: |
-          docker build \ 
-            --build-arg DB_USER=${{secrets.DB_USER}} \ 
-            --build-arg DB_PASSWORD=${{secrets.DB_PASSWORD}} \
-            --build-arg CLUSTER_NAME=${{secrets.CLUSTER_NAME}} \
-            -t $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
-          docker tag $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
-          docker push $IMAGE_NAME:latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: $IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
+          build-args: |
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{secrets.DB_PASSWORD}}
+            CLUSTER_NAME=${{secrets.CLUSTER_NAME}}
+
+        # run: |
+        #   docker build \
+        #     --build-arg DB_USER=${{secrets.DB_USER}} \
+        #     --build-arg DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+        #     --build-arg CLUSTER_NAME=${{secrets.CLUSTER_NAME}} \
+        #     -t $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
+        #   docker tag $IMAGE_NAME:${{ steps.vars.outputs.sha_short }} $IMAGE_NAME:latest
+        #   docker push $IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
+        #   docker push $IMAGE_NAME:latest
