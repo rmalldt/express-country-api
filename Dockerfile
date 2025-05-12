@@ -1,0 +1,16 @@
+FROM node:18
+ARG DB_USER
+ARG DB_PASSWORD
+ARG CLUSTER_NAME
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV CLUSTER_NAME=${CLUSTER_NAME}
+ENV PORT=3000
+
+WORKDIR /app
+COPY package*.json /app
+RUN npm install
+COPY . /app
+EXPOSE 3000
+RUN npm run setup-db
+CMD ["node", "server/index.js"]
