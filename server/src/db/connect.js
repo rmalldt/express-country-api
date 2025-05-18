@@ -22,8 +22,9 @@ function setDb() {
       break;
 
     default:
-      console.log('Database connection error', err.stack);
-      return;
+      throw new Error(
+        'Database connection error: process.env.NODE_ENV not defined!'
+      );
   }
 
   console.log(`DB connection established for ${process.env.NODE_ENV}`);

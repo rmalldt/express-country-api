@@ -15,10 +15,8 @@ jobs:
     name: Check coverage threshold
     runs-on: ubuntu-latest
     env:
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-      PORT: ${{ secrets.PORT }}
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      PORT: ${{ vars.PORT }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
