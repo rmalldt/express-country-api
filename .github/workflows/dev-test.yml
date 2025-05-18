@@ -2,7 +2,7 @@ name: Development
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
     branches:
       - 'development'
   workflow_dispatch:
@@ -27,11 +27,14 @@ jobs:
           path: node_modules
           key: npm-cache-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        working-directory: server
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run tests
+        working-directory: server
         run: npm test -- --coverage --coverageReporters=json-summary
       - name: Check coverage threshold
+        working-directory: server
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
           echo "Total coverage: $COVERAGE%" 
