@@ -5,3 +5,10 @@ node_modules
 coverage
 docker-compose.yaml
 
+
+# terraform
+.terraform
+terraform/.terraform.lock.hcl
+terraform/config.md
+*.tfstate
+*.tfstate.backup
