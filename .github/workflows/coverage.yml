@@ -1,10 +1,11 @@
-name: Development
+name: Test Coverage
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
     branches:
       - 'development'
+      - 'main'
   workflow_dispatch:
 
 env:
@@ -15,10 +16,8 @@ jobs:
     name: Check coverage threshold
     runs-on: ubuntu-latest
     env:
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-      PORT: ${{ secrets.PORT }}
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      PORT: ${{ vars.PORT }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -29,11 +28,14 @@ jobs:
           path: node_modules
           key: npm-cache-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        working-directory: server
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run tests
+        working-directory: server
         run: npm test -- --coverage --coverageReporters=json-summary
       - name: Check coverage threshold
+        working-directory: server
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
           echo "Total coverage: $COVERAGE%" 
