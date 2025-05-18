@@ -20,7 +20,12 @@ output "cluster_status" {
 
 output "api_security_group_id" {
   description = "API service security group id"
-  value       = aws_security_group.api_service_sg.id
+  value       = aws_security_group.api_service.id
+}
+
+output "database_security_group_id" {
+  description = "API service security group id"
+  value       = aws_security_group.database_service.id
 }
 
 # Kubectl Configuration
