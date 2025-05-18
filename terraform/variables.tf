@@ -4,7 +4,6 @@ variable "aws_region" {
   default     = "eu-west-2"
 }
 
-
 variable "k8s_version" {
   default = "1.31"
 }
@@ -22,7 +21,9 @@ variable "private_subnets" {
 }
 
 variable "cluster_name" {
-  default = "rangeiq-cluster"
+  default = "countries-cluster"
 }
 
-
+variable "project_name" {
+  default = "countries"
+}
