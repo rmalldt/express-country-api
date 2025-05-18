@@ -31,6 +31,8 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
   enable_dns_support   = true
+
+  map_public_ip_on_launch = true
 }
 
 module "eks" {
@@ -43,25 +45,29 @@ module "eks" {
   subnet_ids = module.vpc.public_subnets
   vpc_id     = module.vpc.vpc_id
 
+  enable_cluster_creator_admin_permissions = true
+
   eks_managed_node_groups = {
     api_nodes = {
       desired_size      = 2
-      max_size          = 4
-      min_size          = 2
-      instance_types    = ["t3.micro"]
+      max_size          = 2
+      min_size          = 1
+      instance_types    = ["t3.medium"] # UPDATE THIS from t2.micro
       subnet_ids        = module.vpc.public_subnets
-      security_group_id = aws_security_group.api_service_sg.id
+      security_group_id = aws_security_group.api_service.id
+
       labels = {
         service = "api"
       }
     }
 
     db_nodes = {
-      desired_size   = 1
-      max_size       = 1
-      min_size       = 1
-      instance_types = ["t3.micro"]
-      subnet_ids     = module.vpc.private_subnets
+      desired_size      = 1
+      max_size          = 1
+      min_size          = 1
+      instance_types    = ["t2.micro"]
+      subnet_ids        = module.vpc.private_subnets
+      security_group_id = aws_security_group.database_service.id
       labels = {
         service = "database"
       }

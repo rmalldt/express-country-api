@@ -2,33 +2,28 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: rangeiq
+    app: countries
     microservice: db
   name: db
-  namespace: countries
+  namespace: default
 spec:
   replicas: 1
   minReadySeconds: 30
   selector:
     matchLabels:
-      app: rangeiq
+      app: countries
       microservice: db
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: rangeiq
+        app: countries
         microservice: db
     spec:
       nodeSelector:
         service: database
       containers:
         - name: db
-          image: rmall67/rangeiq-db:latest
+          image: rmall67/countries-db-cld:latest
           env:
             - name: POSTGRES_DB
               valueFrom:
@@ -56,13 +51,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: rangeiq
+    app: countries
     microservice: db
-  name: db
-  namespace: countries
+  name: countries-db # this should match the DB_HOST in api-configmap
+  namespace: default
 spec:
   selector:
-    app: rangeiq
+    app: countries
     microservice: db
   ports:
     - protocol: TCP
